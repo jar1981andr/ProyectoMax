@@ -1,0 +1,66 @@
+package proyectamax;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Tarea {
+
+    public static final String PRIORIDAD_URGENTE = "Urgente";
+
+    private int idTarea;
+    private String descripcion;
+    private String prioridad;
+    private Usuario usuarioAsignado;
+    private List<Notificacion> notificaciones;
+
+    public Tarea(int idTarea, String descripcion, String prioridad, Usuario usuarioAsignado) {
+        this.idTarea = idTarea;
+        this.descripcion = descripcion;
+        this.prioridad = prioridad;
+        this.usuarioAsignado = usuarioAsignado;
+        this.notificaciones = new ArrayList<>();
+    }
+
+    /**
+     * Cambia la prioridad de la tarea y genera una notificación si la nueva
+     * prioridad es urgente.
+     *
+     * @param nuevaPrioridad Nueva prioridad asignada a la tarea.
+     */
+    public void cambiarPrioridad(String nuevaPrioridad) {
+        this.prioridad = nuevaPrioridad;
+
+        if (nuevaPrioridad.equalsIgnoreCase(PRIORIDAD_URGENTE)) {
+            generarNotificacion();
+        }
+    }
+
+    /**
+     * Verifica si la tarea es urgente y envía una notificación al usuario asignado.
+     *
+     * @param tarea Objeto Tarea cuya prioridad será evaluada.
+     */
+    public void verificarYNotificar(Tarea tarea) {
+        if (tarea.getPrioridad().equalsIgnoreCase(PRIORIDAD_URGENTE)) {
+            generarNotificacion();
+        }
+    }
+
+    private void generarNotificacion() {
+        String mensaje = "La tarea '" + descripcion + "' ha sido marcada como URGENTE.";
+        Notificacion notificacion = new Notificacion(mensaje, usuarioAsignado);
+        notificaciones.add(notificacion);
+
+        enviarCorreo(notificacion);
+    }
+
+    private void enviarCorreo(Notificacion notificacion) {
+        System.out.println("Enviando correo a: " + notificacion.getDestinatario().getEmail());
+        System.out.println("Mensaje: " + notificacion.getMensaje());
+        System.out.println("Fecha de envío: " + notificacion.getFechaEnvio());
+    }
+
+    public String getPrioridad() {
+        return prioridad;
+    }
+}
